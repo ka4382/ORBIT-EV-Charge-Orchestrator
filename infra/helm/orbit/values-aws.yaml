@@ -1,0 +1,4 @@
+ingress: {className: alb, host: orbit.aws.example.com}
+kafka: {bootstrap: "b-1.orbit.kafka.ap-south-1.amazonaws.com:9096", saslSecret: orbit-msk}
+s3: {endpoint: "https://s3.ap-south-1.amazonaws.com", bucket: orbit-telemetry-prod, secretName: orbit-s3-irsa}
+storageClass: gp3

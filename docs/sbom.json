@@ -1,0 +1,1117 @@
+{
+ "format": "orbit-simple-sbom/1",
+ "generated_by": "uv pip list, go list -m all, web/package-lock.json",
+ "python": [
+  {
+   "name": "aiokafka",
+   "version": "0.14.0"
+  },
+  {
+   "name": "annotated-doc",
+   "version": "0.0.5"
+  },
+  {
+   "name": "annotated-types",
+   "version": "0.8.0"
+  },
+  {
+   "name": "anthropic",
+   "version": "1.11.0"
+  },
+  {
+   "name": "anyio",
+   "version": "4.15.1"
+  },
+  {
+   "name": "asgiref",
+   "version": "3.12.1"
+  },
+  {
+   "name": "ast-serialize",
+   "version": "0.11.2"
+  },
+  {
+   "name": "async-timeout",
+   "version": "5.0.1"
+  },
+  {
+   "name": "asyncpg",
+   "version": "0.31.0"
+  },
+  {
+   "name": "behave",
+   "version": "1.3.3"
+  },
+  {
+   "name": "boto3",
+   "version": "1.43.106"
+  },
+  {
+   "name": "botocore",
+   "version": "1.43.106"
+  },
+  {
+   "name": "certifi",
+   "version": "2026.7.22"
+  },
+  {
+   "name": "cffi",
+   "version": "2.1.1"
+  },
+  {
+   "name": "charset-normalizer",
+   "version": "3.5.2"
+  },
+  {
+   "name": "click",
+   "version": "8.5.0"
+  },
+  {
+   "name": "cloudpickle",
+   "version": "3.1.2"
+  },
+  {
+   "name": "colorama",
+   "version": "0.4.6"
+  },
+  {
+   "name": "coverage",
+   "version": "7.16.2"
+  },
+  {
+   "name": "cramjam",
+   "version": "2.13.0"
+  },
+  {
+   "name": "cryptography",
+   "version": "50.0.2"
+  },
+  {
+   "name": "cucumber-expressions",
+   "version": "20.1.0"
+  },
+  {
+   "name": "cucumber-tag-expressions",
+   "version": "11.0.1"
+  },
+  {
+   "name": "docker",
+   "version": "7.2.0"
+  },
+  {
+   "name": "docstring-parser",
+   "version": "0.18.0"
+  },
+  {
+   "name": "fakeredis",
+   "version": "2.38.0"
+  },
+  {
+   "name": "fastapi",
+   "version": "0.142.2"
+  },
+  {
+   "name": "fastavro",
+   "version": "1.12.2"
+  },
+  {
+   "name": "googleapis-common-protos",
+   "version": "1.75.5"
+  },
+  {
+   "name": "greenlet",
+   "version": "3.5.6"
+  },
+  {
+   "name": "grpcio",
+   "version": "1.84.0"
+  },
+  {
+   "name": "h11",
+   "version": "0.16.0"
+  },
+  {
+   "name": "hiredis",
+   "version": "3.4.2"
+  },
+  {
+   "name": "httpcore",
+   "version": "1.0.9"
+  },
+  {
+   "name": "httpcore2",
+   "version": "2.13.1"
+  },
+  {
+   "name": "httptools",
+   "version": "0.8.0"
+  },
+  {
+   "name": "httpx",
+   "version": "0.28.1"
+  },
+  {
+   "name": "httpx2",
+   "version": "2.13.1"
+  },
+  {
+   "name": "hypothesis",
+   "version": "6.168.3"
+  },
+  {
+   "name": "idna",
+   "version": "3.20"
+  },
+  {
+   "name": "iniconfig",
+   "version": "2.3.0"
+  },
+  {
+   "name": "jiter",
+   "version": "0.17.0"
+  },
+  {
+   "name": "jmespath",
+   "version": "1.1.0"
+  },
+  {
+   "name": "joblib",
+   "version": "1.6.0"
+  },
+  {
+   "name": "librt",
+   "version": "0.16.0"
+  },
+  {
+   "name": "lupa",
+   "version": "2.8"
+  },
+  {
+   "name": "lz4",
+   "version": "4.4.5"
+  },
+  {
+   "name": "mmh3",
+   "version": "5.3.1"
+  },
+  {
+   "name": "mypy",
+   "version": "2.3.1"
+  },
+  {
+   "name": "mypy-extensions",
+   "version": "1.1.0"
+  },
+  {
+   "name": "narwhals",
+   "version": "2.26.0"
+  },
+  {
+   "name": "numpy",
+   "version": "2.5.3"
+  },
+  {
+   "name": "opentelemetry-api",
+   "version": "1.45.0"
+  },
+  {
+   "name": "opentelemetry-exporter-otlp-common",
+   "version": "0.66b0"
+  },
+  {
+   "name": "opentelemetry-exporter-otlp-proto-common",
+   "version": "1.45.0"
+  },
+  {
+   "name": "opentelemetry-exporter-otlp-proto-grpc",
+   "version": "1.45.0"
+  },
+  {
+   "name": "opentelemetry-instrumentation",
+   "version": "0.66b0"
+  },
+  {
+   "name": "opentelemetry-instrumentation-asgi",
+   "version": "0.66b0"
+  },
+  {
+   "name": "opentelemetry-instrumentation-fastapi",
+   "version": "0.66b0"
+  },
+  {
+   "name": "opentelemetry-proto",
+   "version": "1.45.0"
+  },
+  {
+   "name": "opentelemetry-sdk",
+   "version": "1.45.0"
+  },
+  {
+   "name": "opentelemetry-semantic-conventions",
+   "version": "0.66b0"
+  },
+  {
+   "name": "opentelemetry-util-http",
+   "version": "0.66b0"
+  },
+  {
+   "name": "orjson",
+   "version": "3.12.0"
+  },
+  {
+   "name": "packaging",
+   "version": "26.3"
+  },
+  {
+   "name": "parse",
+   "version": "1.22.2"
+  },
+  {
+   "name": "parse-type",
+   "version": "0.6.6"
+  },
+  {
+   "name": "pathspec",
+   "version": "1.1.1"
+  },
+  {
+   "name": "pluggy",
+   "version": "1.6.0"
+  },
+  {
+   "name": "prometheus-client",
+   "version": "0.26.0"
+  },
+  {
+   "name": "protobuf",
+   "version": "7.36.2"
+  },
+  {
+   "name": "psycopg",
+   "version": "3.3.6"
+  },
+  {
+   "name": "psycopg-binary",
+   "version": "3.3.6"
+  },
+  {
+   "name": "psycopg-pool",
+   "version": "3.3.3"
+  },
+  {
+   "name": "pyarrow",
+   "version": "25.0.1"
+  },
+  {
+   "name": "pycparser",
+   "version": "3.0"
+  },
+  {
+   "name": "pydantic",
+   "version": "2.13.5"
+  },
+  {
+   "name": "pydantic-core",
+   "version": "2.46.5"
+  },
+  {
+   "name": "pydantic-settings",
+   "version": "2.15.0"
+  },
+  {
+   "name": "pygments",
+   "version": "2.21.0"
+  },
+  {
+   "name": "pyjwt",
+   "version": "2.15.1"
+  },
+  {
+   "name": "pytest",
+   "version": "9.1.1"
+  },
+  {
+   "name": "pytest-asyncio",
+   "version": "1.4.0"
+  },
+  {
+   "name": "pytest-cov",
+   "version": "7.1.0"
+  },
+  {
+   "name": "python-dateutil",
+   "version": "2.9.0.post0"
+  },
+  {
+   "name": "python-dotenv",
+   "version": "1.2.3"
+  },
+  {
+   "name": "python-multipart",
+   "version": "0.0.32"
+  },
+  {
+   "name": "pyyaml",
+   "version": "6.0.3"
+  },
+  {
+   "name": "redis",
+   "version": "8.1.0"
+  },
+  {
+   "name": "requests",
+   "version": "2.34.2"
+  },
+  {
+   "name": "ruff",
+   "version": "0.16.9"
+  },
+  {
+   "name": "s3transfer",
+   "version": "0.19.2"
+  },
+  {
+   "name": "scikit-learn",
+   "version": "1.9.1"
+  },
+  {
+   "name": "scipy",
+   "version": "1.18.1"
+  },
+  {
+   "name": "six",
+   "version": "1.17.0"
+  },
+  {
+   "name": "sniffio",
+   "version": "1.3.1"
+  },
+  {
+   "name": "sortedcontainers",
+   "version": "2.4.0"
+  },
+  {
+   "name": "sqlalchemy",
+   "version": "2.1.1"
+  },
+  {
+   "name": "starlette",
+   "version": "1.7.0"
+  },
+  {
+   "name": "structlog",
+   "version": "26.1.0"
+  },
+  {
+   "name": "testcontainers",
+   "version": "4.15.0"
+  },
+  {
+   "name": "threadpoolctl",
+   "version": "3.7.0"
+  },
+  {
+   "name": "truststore",
+   "version": "0.10.4"
+  },
+  {
+   "name": "types-pyyaml",
+   "version": "6.0.12.20260906"
+  },
+  {
+   "name": "typing-extensions",
+   "version": "4.16.0"
+  },
+  {
+   "name": "typing-inspection",
+   "version": "0.4.4"
+  },
+  {
+   "name": "urllib3",
+   "version": "2.8.0"
+  },
+  {
+   "name": "uvicorn",
+   "version": "0.54.0"
+  },
+  {
+   "name": "uvloop",
+   "version": "0.22.1"
+  },
+  {
+   "name": "watchfiles",
+   "version": "1.3.0"
+  },
+  {
+   "name": "websockets",
+   "version": "17.1"
+  },
+  {
+   "name": "wrapt",
+   "version": "2.5.0"
+  }
+ ],
+ "go": [
+  {
+   "module": "github.com/alecthomas/kingpin/v2",
+   "version": "v2.4.0"
+  },
+  {
+   "module": "github.com/alecthomas/units",
+   "version": "v0.0.0-20211218093645-b94a6e3cc137"
+  },
+  {
+   "module": "github.com/beorn7/perks",
+   "version": "v1.0.1"
+  },
+  {
+   "module": "github.com/cespare/xxhash/v2",
+   "version": "v2.3.0"
+  },
+  {
+   "module": "github.com/davecgh/go-spew",
+   "version": "v1.1.1"
+  },
+  {
+   "module": "github.com/eclipse/paho.mqtt.golang",
+   "version": "v1.5.0"
+  },
+  {
+   "module": "github.com/go-kit/log",
+   "version": "v0.2.1"
+  },
+  {
+   "module": "github.com/go-logfmt/logfmt",
+   "version": "v0.5.1"
+  },
+  {
+   "module": "github.com/golang/protobuf",
+   "version": "v1.5.0"
+  },
+  {
+   "module": "github.com/google/go-cmp",
+   "version": "v0.6.0"
+  },
+  {
+   "module": "github.com/gorilla/websocket",
+   "version": "v1.5.3"
+  },
+  {
+   "module": "github.com/jackc/pgpassfile",
+   "version": "v1.0.0"
+  },
+  {
+   "module": "github.com/jackc/pgservicefile",
+   "version": "v0.0.0-20240606120523-5a60cdf6a761"
+  },
+  {
+   "module": "github.com/jackc/pgx/v5",
+   "version": "v5.7.2"
+  },
+  {
+   "module": "github.com/jackc/puddle/v2",
+   "version": "v2.2.2"
+  },
+  {
+   "module": "github.com/jpillora/backoff",
+   "version": "v1.0.0"
+  },
+  {
+   "module": "github.com/json-iterator/go",
+   "version": "v1.1.12"
+  },
+  {
+   "module": "github.com/julienschmidt/httprouter",
+   "version": "v1.3.0"
+  },
+  {
+   "module": "github.com/klauspost/compress",
+   "version": "v1.17.11"
+  },
+  {
+   "module": "github.com/kr/pretty",
+   "version": "v0.3.1"
+  },
+  {
+   "module": "github.com/kylelemons/godebug",
+   "version": "v1.1.0"
+  },
+  {
+   "module": "github.com/modern-go/concurrent",
+   "version": "v0.0.0-20180306012644-bacd9c7ef1dd"
+  },
+  {
+   "module": "github.com/modern-go/reflect2",
+   "version": "v1.0.2"
+  },
+  {
+   "module": "github.com/munnerz/goautoneg",
+   "version": "v0.0.0-20191010083416-a7dc8b61c822"
+  },
+  {
+   "module": "github.com/mwitkow/go-conntrack",
+   "version": "v0.0.0-20190716064945-2f068394615f"
+  },
+  {
+   "module": "github.com/pierrec/lz4/v4",
+   "version": "v4.1.22"
+  },
+  {
+   "module": "github.com/pmezard/go-difflib",
+   "version": "v1.0.0"
+  },
+  {
+   "module": "github.com/prometheus/client_golang",
+   "version": "v1.20.5"
+  },
+  {
+   "module": "github.com/prometheus/client_model",
+   "version": "v0.6.1"
+  },
+  {
+   "module": "github.com/prometheus/common",
+   "version": "v0.55.0"
+  },
+  {
+   "module": "github.com/prometheus/procfs",
+   "version": "v0.15.1"
+  },
+  {
+   "module": "github.com/rogpeppe/go-internal",
+   "version": "v1.10.0"
+  },
+  {
+   "module": "github.com/stretchr/objx",
+   "version": "v0.1.0"
+  },
+  {
+   "module": "github.com/stretchr/testify",
+   "version": "v1.9.0"
+  },
+  {
+   "module": "github.com/twmb/franz-go",
+   "version": "v1.18.1"
+  },
+  {
+   "module": "github.com/twmb/franz-go/pkg/kmsg",
+   "version": "v1.9.0"
+  },
+  {
+   "module": "github.com/xhit/go-str2duration/v2",
+   "version": "v2.1.0"
+  },
+  {
+   "module": "golang.org/x/crypto",
+   "version": "v0.32.0"
+  },
+  {
+   "module": "golang.org/x/mod",
+   "version": "v0.17.0"
+  },
+  {
+   "module": "golang.org/x/net",
+   "version": "v0.27.0"
+  },
+  {
+   "module": "golang.org/x/oauth2",
+   "version": "v0.21.0"
+  },
+  {
+   "module": "golang.org/x/sync",
+   "version": "v0.10.0"
+  },
+  {
+   "module": "golang.org/x/sys",
+   "version": "v0.29.0"
+  },
+  {
+   "module": "golang.org/x/term",
+   "version": "v0.28.0"
+  },
+  {
+   "module": "golang.org/x/text",
+   "version": "v0.21.0"
+  },
+  {
+   "module": "golang.org/x/tools",
+   "version": "v0.21.1-0.20240508182429-e35e4ccd0d2d"
+  },
+  {
+   "module": "golang.org/x/xerrors",
+   "version": "v0.0.0-20191204190536-9bdfabe68543"
+  },
+  {
+   "module": "google.golang.org/protobuf",
+   "version": "v1.34.2"
+  },
+  {
+   "module": "gopkg.in/check.v1",
+   "version": "v1.0.0-20201130134442-10cb98267c6c"
+  },
+  {
+   "module": "gopkg.in/yaml.v2",
+   "version": "v2.4.0"
+  },
+  {
+   "module": "gopkg.in/yaml.v3",
+   "version": "v3.0.1"
+  }
+ ],
+ "web_runtime": [
+  {
+   "name": "@babel/runtime",
+   "version": "7.29.7",
+   "license": "MIT"
+  },
+  {
+   "name": "@mapbox/geojson-rewind",
+   "version": "0.5.2",
+   "license": "ISC"
+  },
+  {
+   "name": "@mapbox/jsonlint-lines-primitives",
+   "version": "2.0.3",
+   "license": "MIT"
+  },
+  {
+   "name": "@mapbox/point-geometry",
+   "version": "0.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "@mapbox/tiny-sdf",
+   "version": "2.2.0",
+   "license": "BSD-2-Clause"
+  },
+  {
+   "name": "@mapbox/unitbezier",
+   "version": "0.0.1",
+   "license": "BSD-2-Clause"
+  },
+  {
+   "name": "@mapbox/vector-tile",
+   "version": "1.3.1",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "@mapbox/whoots-js",
+   "version": "3.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "@maplibre/maplibre-gl-style-spec",
+   "version": "20.4.0",
+   "license": "ISC"
+  },
+  {
+   "name": "quickselect",
+   "version": "2.0.0",
+   "license": "ISC"
+  },
+  {
+   "name": "@remix-run/router",
+   "version": "1.23.4",
+   "license": "MIT"
+  },
+  {
+   "name": "@tanstack/query-core",
+   "version": "5.104.0",
+   "license": "MIT"
+  },
+  {
+   "name": "@tanstack/react-query",
+   "version": "5.104.0",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-array",
+   "version": "3.2.2",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-color",
+   "version": "3.1.3",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-ease",
+   "version": "3.0.2",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-interpolate",
+   "version": "3.0.4",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-path",
+   "version": "3.1.1",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-scale",
+   "version": "4.0.9",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-shape",
+   "version": "3.2.0",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-time",
+   "version": "3.0.4",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/d3-timer",
+   "version": "3.0.2",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/geojson",
+   "version": "7946.0.16",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/geojson-vt",
+   "version": "3.2.5",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/mapbox__point-geometry",
+   "version": "0.1.4",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/mapbox__vector-tile",
+   "version": "1.3.4",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/pbf",
+   "version": "3.0.5",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/prop-types",
+   "version": "15.7.15",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/react",
+   "version": "18.3.31",
+   "license": "MIT"
+  },
+  {
+   "name": "@types/supercluster",
+   "version": "7.1.3",
+   "license": "MIT"
+  },
+  {
+   "name": "clsx",
+   "version": "2.1.1",
+   "license": "MIT"
+  },
+  {
+   "name": "csstype",
+   "version": "3.2.3",
+   "license": "MIT"
+  },
+  {
+   "name": "d3-array",
+   "version": "3.2.4",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-color",
+   "version": "3.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-ease",
+   "version": "3.0.1",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "d3-format",
+   "version": "3.1.2",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-interpolate",
+   "version": "3.0.1",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-path",
+   "version": "3.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-scale",
+   "version": "4.0.2",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-shape",
+   "version": "3.2.0",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-time",
+   "version": "3.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-time-format",
+   "version": "4.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "d3-timer",
+   "version": "3.0.1",
+   "license": "ISC"
+  },
+  {
+   "name": "decimal.js-light",
+   "version": "2.5.1",
+   "license": "MIT"
+  },
+  {
+   "name": "dom-helpers",
+   "version": "5.2.1",
+   "license": "MIT"
+  },
+  {
+   "name": "earcut",
+   "version": "3.2.4",
+   "license": "ISC"
+  },
+  {
+   "name": "eventemitter3",
+   "version": "4.0.7",
+   "license": "MIT"
+  },
+  {
+   "name": "fast-equals",
+   "version": "5.4.3",
+   "license": "MIT"
+  },
+  {
+   "name": "geojson-vt",
+   "version": "4.0.3",
+   "license": "ISC"
+  },
+  {
+   "name": "get-stream",
+   "version": "6.0.1",
+   "license": "MIT"
+  },
+  {
+   "name": "gl-matrix",
+   "version": "3.4.4",
+   "license": "MIT"
+  },
+  {
+   "name": "global-prefix",
+   "version": "4.0.0",
+   "license": "MIT"
+  },
+  {
+   "name": "isexe",
+   "version": "3.1.5",
+   "license": "BlueOak-1.0.0"
+  },
+  {
+   "name": "which",
+   "version": "4.0.0",
+   "license": "ISC"
+  },
+  {
+   "name": "ieee754",
+   "version": "1.2.1",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "ini",
+   "version": "4.1.3",
+   "license": "ISC"
+  },
+  {
+   "name": "internmap",
+   "version": "2.0.3",
+   "license": "ISC"
+  },
+  {
+   "name": "js-tokens",
+   "version": "4.0.0",
+   "license": "MIT"
+  },
+  {
+   "name": "json-stringify-pretty-compact",
+   "version": "4.0.0",
+   "license": "MIT"
+  },
+  {
+   "name": "kdbush",
+   "version": "4.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "kind-of",
+   "version": "6.0.3",
+   "license": "MIT"
+  },
+  {
+   "name": "lodash",
+   "version": "4.18.1",
+   "license": "MIT"
+  },
+  {
+   "name": "loose-envify",
+   "version": "1.4.0",
+   "license": "MIT"
+  },
+  {
+   "name": "maplibre-gl",
+   "version": "4.7.1",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "minimist",
+   "version": "1.2.8",
+   "license": "MIT"
+  },
+  {
+   "name": "murmurhash-js",
+   "version": "1.0.0",
+   "license": "MIT"
+  },
+  {
+   "name": "object-assign",
+   "version": "4.1.1",
+   "license": "MIT"
+  },
+  {
+   "name": "pbf",
+   "version": "3.3.0",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "potpack",
+   "version": "2.1.0",
+   "license": "ISC"
+  },
+  {
+   "name": "prop-types",
+   "version": "15.8.1",
+   "license": "MIT"
+  },
+  {
+   "name": "react-is",
+   "version": "16.13.1",
+   "license": "MIT"
+  },
+  {
+   "name": "protocol-buffers-schema",
+   "version": "3.6.1",
+   "license": "MIT"
+  },
+  {
+   "name": "quickselect",
+   "version": "3.0.0",
+   "license": "ISC"
+  },
+  {
+   "name": "react",
+   "version": "18.3.1",
+   "license": "MIT"
+  },
+  {
+   "name": "react-dom",
+   "version": "18.3.1",
+   "license": "MIT"
+  },
+  {
+   "name": "react-router",
+   "version": "6.30.6",
+   "license": "MIT"
+  },
+  {
+   "name": "react-router-dom",
+   "version": "6.30.6",
+   "license": "MIT"
+  },
+  {
+   "name": "react-smooth",
+   "version": "4.0.4",
+   "license": "MIT"
+  },
+  {
+   "name": "react-transition-group",
+   "version": "4.4.5",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "recharts",
+   "version": "2.15.4",
+   "license": "MIT"
+  },
+  {
+   "name": "recharts-scale",
+   "version": "0.4.5",
+   "license": "MIT"
+  },
+  {
+   "name": "react-is",
+   "version": "18.3.1",
+   "license": "MIT"
+  },
+  {
+   "name": "resolve-protobuf-schema",
+   "version": "2.1.0",
+   "license": "MIT"
+  },
+  {
+   "name": "rw",
+   "version": "1.3.3",
+   "license": "BSD-3-Clause"
+  },
+  {
+   "name": "scheduler",
+   "version": "0.23.2",
+   "license": "MIT"
+  },
+  {
+   "name": "supercluster",
+   "version": "8.0.1",
+   "license": "ISC"
+  },
+  {
+   "name": "tiny-invariant",
+   "version": "1.3.3",
+   "license": "MIT"
+  },
+  {
+   "name": "tinyqueue",
+   "version": "3.0.0",
+   "license": "ISC"
+  },
+  {
+   "name": "victory-vendor",
+   "version": "36.9.2",
+   "license": "MIT AND ISC"
+  },
+  {
+   "name": "vt-pbf",
+   "version": "3.1.3",
+   "license": "MIT"
+  },
+  {
+   "name": "zustand",
+   "version": "5.0.15",
+   "license": "MIT"
+  }
+ ]
+}

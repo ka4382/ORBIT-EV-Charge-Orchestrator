@@ -1,0 +1,11 @@
+GroupAggregate  (cost=0.29..3932.21 rows=8 width=12) (actual time=0.393..1.013 rows=8 loops=1)
+  Group Key: tenant_id
+  Buffers: shared hit=9 read=19
+  ->  Index Only Scan using alert_open_idx on alert  (cost=0.29..3905.14 rows=5397 width=4) (actual time=0.108..0.989 rows=48 loops=1)
+        Index Cond: (severity = 'CRITICAL'::text)
+        Heap Fetches: 48
+        Buffers: shared hit=9 read=19
+Planning:
+  Buffers: shared hit=471 read=1
+Planning Time: 2.643 ms
+Execution Time: 1.160 ms

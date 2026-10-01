@@ -1,0 +1,27 @@
+.reports-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.reports-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.reports-chart-body {
+  padding: 12px 8px 4px;
+}
+.panel-head h2 {
+  font-size: var(--fs-16);
+  color: var(--fg-strong);
+}
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 900px) {
+  .reports-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,50 @@
+[project]
+name = "orbit-services"
+version = "0.1.0"
+description = "ORBIT EV Charge Orchestrator — Python services workspace"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.uv.workspace]
+members = ["common", "ingest", "state", "alert", "archiver", "api", "planner", "ml"]
+
+[tool.uv.sources]
+orbit-common = { workspace = true }
+
+[dependency-groups]
+dev = [
+  "pytest>=8.3", "pytest-asyncio>=0.24", "pytest-cov>=6.0", "hypothesis>=6.115",
+  "ruff>=0.7", "mypy>=1.13", "testcontainers[postgres,redis,kafka]>=4.8", "httpx>=0.27",
+  "behave>=1.2.6", "types-PyYAML",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["common/tests", "ingest/tests", "state/tests", "alert/tests", "archiver/tests", "api/tests", "planner/tests", "ml/tests"]
+norecursedirs = [".venv", "tests/integration"]
+markers = ["integration: needs docker (Testcontainers)"]
+addopts = "-m 'not integration'"
+
+[tool.coverage.run]
+source = ["common/orbit_common", "ingest/orbit_ingest", "state/orbit_state", "alert/orbit_alert", "archiver/orbit_archiver", "api/orbit_api", "planner/orbit_planner", "ml/orbit_ml"]
+omit = ["*/__main__.py", "*/seed.py"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "N", "S", "ASYNC", "SIM"]
+ignore = ["S101", "S311"]
+
+[tool.ruff.lint.per-file-ignores]
+# dev-only defaults, overridden by env in every deployed environment (see .env.example / Helm secrets)
+"common/orbit_common/config.py" = ["S105"]
+# seed script: long literal SQL and data rows read better unwrapped
+"common/orbit_common/seed.py" = ["E501"]
+"**/tests/**" = ["E501", "S105", "S106"]
+
+[tool.mypy]
+python_version = "3.12"
+files = ["common/orbit_common", "ingest/orbit_ingest", "state/orbit_state", "alert/orbit_alert", "archiver/orbit_archiver", "api/orbit_api", "planner/orbit_planner", "ml/orbit_ml"]
+strict = false
+ignore_missing_imports = true

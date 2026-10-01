@@ -1,0 +1,31 @@
+Limit  (cost=84.61..112.81 rows=50 width=90) (actual time=2.143..2.245 rows=50 loops=1)
+  Buffers: shared hit=119 read=15
+  InitPlan 1 (returns $0)
+    ->  Limit  (cost=83.85..83.88 rows=1 width=8) (actual time=2.020..2.021 rows=1 loops=1)
+          Buffers: shared hit=1 read=15
+          ->  Index Only Scan using vehicle_fleet_idx on vehicle  (cost=0.42..113.56 rows=4067 width=8) (actual time=0.337..1.863 rows=3000 loops=1)
+                Index Cond: (fleet_id = 2)
+                Heap Fetches: 0
+                Buffers: shared hit=1 read=15
+  ->  Nested Loop  (cost=0.73..765.73 rows=1356 width=90) (actual time=2.142..2.239 rows=50 loops=1)
+        Buffers: shared hit=119 read=15
+        ->  Nested Loop  (cost=0.58..504.91 rows=1356 width=62) (actual time=2.109..2.164 rows=50 loops=1)
+              Buffers: shared hit=19 read=15
+              ->  Index Scan using vehicle_fleet_idx on vehicle v  (cost=0.42..469.82 rows=1356 width=30) (actual time=2.057..2.071 rows=50 loops=1)
+                    Index Cond: ((fleet_id = 2) AND (id > $0))
+                    Buffers: shared hit=7 read=15
+              ->  Memoize  (cost=0.16..0.19 rows=1 width=40) (actual time=0.001..0.001 rows=1 loops=50)
+                    Cache Key: v.model_id
+                    Cache Mode: logical
+                    Hits: 44  Misses: 6  Evictions: 0  Overflows: 0  Memory Usage: 1kB
+                    Buffers: shared hit=12
+                    ->  Index Scan using vehicle_model_pkey on vehicle_model m  (cost=0.15..0.18 rows=1 width=40) (actual time=0.006..0.006 rows=1 loops=6)
+                          Index Cond: (id = v.model_id)
+                          Buffers: shared hit=12
+        ->  Index Scan using oem_pkey on oem o  (cost=0.15..0.19 rows=1 width=36) (actual time=0.001..0.001 rows=1 loops=50)
+              Index Cond: (id = m.oem_id)
+              Buffers: shared hit=100
+Planning:
+  Buffers: shared hit=697 read=1
+Planning Time: 4.087 ms
+Execution Time: 2.912 ms

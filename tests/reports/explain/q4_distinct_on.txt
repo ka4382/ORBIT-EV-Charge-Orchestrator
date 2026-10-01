@@ -1,0 +1,95 @@
+Unique  (cost=41097.55..46721.03 rows=45562 width=30) (actual time=589.409..802.660 rows=4180 loops=1)
+  Buffers: shared hit=24190 read=4
+  ->  Gather Merge  (cost=41097.55..46607.13 rows=45562 width=30) (actual time=589.257..778.085 rows=232876 loops=1)
+        Workers Planned: 5
+        Workers Launched: 5
+        Buffers: shared hit=24190 read=4
+        ->  Sort  (cost=40097.48..40120.26 rows=9112 width=30) (actual time=557.592..567.172 rows=38813 loops=6)
+              Sort Key: t.vin, t.ts DESC
+              Sort Method: quicksort  Memory: 2484kB
+              Buffers: shared hit=24190 read=4
+              Worker 0:  Sort Method: quicksort  Memory: 3919kB
+              Worker 1:  Sort Method: quicksort  Memory: 5175kB
+              Worker 2:  Sort Method: quicksort  Memory: 2244kB
+              Worker 3:  Sort Method: quicksort  Memory: 2285kB
+              Worker 4:  Sort Method: quicksort  Memory: 5317kB
+              ->  Hash Join  (cost=751.89..39498.20 rows=9112 width=30) (actual time=22.534..425.429 rows=38813 loops=6)
+                    Hash Cond: (t.vin = v.vin)
+                    Buffers: shared hit=24115 read=4
+                    ->  Parallel Custom Scan (ChunkAppend) on telemetry t  (cost=0.00..37016.40 rows=658983 width=30) (actual time=4.263..306.329 rows=185652 loops=6)
+                          Chunks excluded during startup: 0
+                          Buffers: shared hit=22972
+                          ->  Parallel Seq Scan on _hyper_1_36_chunk t_3  (cost=0.00..2488.12 rows=44289 width=30) (actual time=2.212..200.788 rows=74860 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5371
+                                Buffers: shared hit=1544
+                          ->  Parallel Seq Scan on _hyper_1_39_chunk t_6  (cost=0.00..2398.00 rows=42760 width=30) (actual time=5.229..72.697 rows=72128 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5182
+                                Buffers: shared hit=1488
+                          ->  Parallel Seq Scan on _hyper_1_40_chunk t_7  (cost=0.00..2376.40 rows=42365 width=30) (actual time=3.263..172.952 rows=71497 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5129
+                                Buffers: shared hit=1475
+                          ->  Parallel Seq Scan on _hyper_1_38_chunk t_5  (cost=0.00..2367.24 rows=42202 width=30) (actual time=10.961..195.475 rows=71233 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5108
+                                Buffers: shared hit=1469
+                          ->  Parallel Seq Scan on _hyper_1_34_chunk t_1  (cost=0.00..2365.61 rows=42195 width=30) (actual time=1.881..119.796 rows=71208 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5111
+                                Buffers: shared hit=1468
+                          ->  Parallel Seq Scan on _hyper_1_44_chunk t_11  (cost=0.00..2334.95 rows=41611 width=30) (actual time=2.019..169.300 rows=70271 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5041
+                                Buffers: shared hit=1449
+                          ->  Parallel Seq Scan on _hyper_1_35_chunk t_2  (cost=0.00..2334.64 rows=41235 width=30) (actual time=4.544..127.136 rows=70280 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5036
+                                Buffers: shared hit=1449
+                          ->  Parallel Seq Scan on _hyper_1_47_chunk t_14  (cost=0.00..2330.14 rows=41507 width=30) (actual time=3.835..60.703 rows=70138 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 5030
+                                Buffers: shared hit=1446
+                          ->  Parallel Seq Scan on _hyper_1_42_chunk t_9  (cost=0.00..2316.08 rows=41305 width=30) (actual time=5.678..62.880 rows=34861 loops=2)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 2500
+                                Buffers: shared hit=1437
+                          ->  Parallel Seq Scan on _hyper_1_45_chunk t_12  (cost=0.00..2310.28 rows=41136 width=30) (actual time=3.144..50.936 rows=69491 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 4982
+                                Buffers: shared hit=1434
+                          ->  Parallel Seq Scan on _hyper_1_41_chunk t_8  (cost=0.00..2301.73 rows=41014 width=30) (actual time=2.107..45.585 rows=69224 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 4966
+                                Buffers: shared hit=1429
+                          ->  Parallel Seq Scan on _hyper_1_46_chunk t_13  (cost=0.00..2243.19 rows=39971 width=30) (actual time=0.757..41.954 rows=67528 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 4843
+                                Buffers: shared hit=1392
+                          ->  Parallel Seq Scan on _hyper_1_49_chunk t_16  (cost=0.00..2230.46 rows=39359 width=30) (actual time=0.303..26.225 rows=22383 loops=3)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 1606
+                                Buffers: shared hit=1384
+                          ->  Parallel Seq Scan on _hyper_1_48_chunk t_15  (cost=0.00..2223.31 rows=39643 width=30) (actual time=0.857..17.139 rows=13374 loops=5)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 960
+                                Buffers: shared hit=1380
+                          ->  Parallel Seq Scan on _hyper_1_43_chunk t_10  (cost=0.00..2217.67 rows=39562 width=30) (actual time=0.614..15.839 rows=33376 loops=2)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 2392
+                                Buffers: shared hit=1376
+                          ->  Parallel Seq Scan on _hyper_1_37_chunk t_4  (cost=0.00..2178.59 rows=38829 width=30) (actual time=0.758..32.889 rows=65561 loops=1)
+                                Filter: (ts > (now() - '00:10:00'::interval))
+                                Rows Removed by Filter: 4704
+                                Buffers: shared hit=1352
+                    ->  Hash  (cost=701.05..701.05 rows=4067 width=18) (actual time=13.994..14.012 rows=4180 loops=6)
+                          Buckets: 8192 (originally 4096)  Batches: 1 (originally 1)  Memory Usage: 269kB
+                          Buffers: shared hit=973 read=4
+                          ->  Index Scan using vehicle_fleet_idx on vehicle v  (cost=0.42..701.05 rows=4067 width=18) (actual time=0.984..2.674 rows=4180 loops=6)
+                                Index Cond: (fleet_id = 2)
+                                Buffers: shared hit=973 read=4
+Planning:
+  Buffers: shared hit=2589
+Planning Time: 22.792 ms
+Execution Time: 804.331 ms

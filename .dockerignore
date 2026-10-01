@@ -1,0 +1,18 @@
+# Build context for services/Dockerfile is the repo root: send only what the image needs.
+**/.venv
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/*.pyc
+.git
+design
+docs
+web
+simulator
+infra
+tests
+*.pdf
+*.docx
+.env

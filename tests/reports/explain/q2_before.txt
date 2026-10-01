@@ -1,0 +1,27 @@
+Finalize GroupAggregate  (cost=8502.05..8504.08 rows=8 width=12) (actual time=111.035..121.729 rows=8 loops=1)
+  Group Key: tenant_id
+  Buffers: shared hit=5421
+  ->  Gather Merge  (cost=8502.05..8503.92 rows=16 width=12) (actual time=111.021..121.711 rows=8 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=5421
+        ->  Sort  (cost=7502.03..7502.05 rows=8 width=12) (actual time=97.841..97.844 rows=3 loops=3)
+              Sort Key: tenant_id
+              Sort Method: quicksort  Memory: 25kB
+              Buffers: shared hit=5421
+              Worker 0:  Sort Method: quicksort  Memory: 25kB
+              Worker 1:  Sort Method: quicksort  Memory: 25kB
+              ->  Partial HashAggregate  (cost=7501.83..7501.91 rows=8 width=12) (actual time=97.776..97.779 rows=3 loops=3)
+                    Group Key: tenant_id
+                    Batches: 1  Memory Usage: 24kB
+                    Buffers: shared hit=5407
+                    Worker 0:  Batches: 1  Memory Usage: 24kB
+                    Worker 1:  Batches: 1  Memory Usage: 24kB
+                    ->  Parallel Seq Scan on alert  (cost=0.00..7490.58 rows=2249 width=4) (actual time=61.329..97.676 rows=16 loops=3)
+                          Filter: ((acked_ts IS NULL) AND (severity = 'CRITICAL'::text))
+                          Rows Removed by Filter: 133333
+                          Buffers: shared hit=5407
+Planning:
+  Buffers: shared hit=448
+Planning Time: 5.717 ms
+Execution Time: 122.193 ms

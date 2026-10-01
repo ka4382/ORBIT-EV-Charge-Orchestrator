@@ -1,0 +1,23 @@
+Limit  (cost=23717.15..24112.43 rows=50 width=90) (actual time=10.616..10.791 rows=50 loops=1)
+  Buffers: shared hit=18429
+  ->  Index Scan using vehicle_pkey on vehicle v  (cost=0.29..32152.45 rows=4067 width=90) (actual time=0.115..10.662 rows=3050 loops=1)
+        Filter: (fleet_id = 2)
+        Rows Removed by Filter: 5976
+        Buffers: shared hit=18429
+        SubPlan 1
+          ->  Index Scan using vehicle_model_pkey on vehicle_model m  (cost=0.15..2.37 rows=1 width=32) (actual time=0.001..0.001 rows=1 loops=3050)
+                Index Cond: (id = v.model_id)
+                Buffers: shared hit=6100
+        SubPlan 2
+          ->  Nested Loop  (cost=0.30..4.74 rows=1 width=32) (actual time=0.001..0.002 rows=1 loops=3050)
+                Buffers: shared hit=12200
+                ->  Index Scan using vehicle_model_pkey on vehicle_model m_1  (cost=0.15..2.37 rows=1 width=4) (actual time=0.000..0.001 rows=1 loops=3050)
+                      Index Cond: (id = v.model_id)
+                      Buffers: shared hit=6100
+                ->  Index Scan using oem_pkey on oem o  (cost=0.15..2.37 rows=1 width=36) (actual time=0.000..0.000 rows=1 loops=3050)
+                      Index Cond: (id = m_1.oem_id)
+                      Buffers: shared hit=6100
+Planning:
+  Buffers: shared hit=673
+Planning Time: 1.883 ms
+Execution Time: 10.855 ms

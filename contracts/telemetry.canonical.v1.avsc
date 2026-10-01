@@ -1,0 +1,27 @@
+{
+  "type": "record",
+  "name": "TelemetryCanonical",
+  "namespace": "orbit.telemetry.v1",
+  "doc": "One normalised vehicle event. Produced by ingest after OEM adapter + validation + dedupe.",
+  "fields": [
+    {"name": "vin", "type": "string", "doc": "17 chars, no I/O/Q, valid check digit"},
+    {"name": "ts", "type": {"type": "long", "logicalType": "timestamp-millis"}, "doc": "vehicle clock, UTC"},
+    {"name": "ingest_ts", "type": {"type": "long", "logicalType": "timestamp-millis"}},
+    {"name": "seq", "type": "long", "doc": "per-vehicle monotonic sequence; (vin,seq) is the idempotency key"},
+    {"name": "tenant_id", "type": "int"},
+    {"name": "oem", "type": "string"},
+    {"name": "lat", "type": "double"},
+    {"name": "lon", "type": "double"},
+    {"name": "speed_kmh", "type": "float"},
+    {"name": "soc_pct", "type": ["null", "float"], "default": null},
+    {"name": "soh_pct", "type": ["null", "float"], "default": null},
+    {"name": "odo_km", "type": "double"},
+    {"name": "fuel_pct", "type": ["null", "float"], "default": null},
+    {"name": "ambient_c", "type": ["null", "float"], "default": null},
+    {"name": "dtc", "type": {"type": "array", "items": "string"}, "default": []},
+    {"name": "evt", "type": ["null", "string"], "default": null, "doc": "HARSH_BRAKE, CHARGE_START, CHARGE_STOP, TRIP_START, TRIP_END, DTC_SET, ..."},
+    {"name": "charging_state", "type": {"type": "enum", "name": "ChargingState", "symbols": ["NONE", "AC", "DC"]}, "default": "NONE"},
+    {"name": "charging_kw", "type": "float", "default": 0.0},
+    {"name": "schema_version", "type": "int", "default": 1}
+  ]
+}

@@ -1,0 +1,115 @@
+name: ci
+on:
+  push: {branches: ["**"]}
+  pull_request:
+concurrency: {group: "${{ github.workflow }}-${{ github.ref }}", cancel-in-progress: true}
+permissions: {contents: read, security-events: write}
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: services}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with: {enable-cache: true}
+      - run: uv python install 3.12
+      - run: uv sync --all-packages --dev
+      - run: uv run ruff check . && uv run ruff format --check .
+      - run: uv run mypy
+      - run: uv run pytest -q --cov --cov-report=xml:coverage.xml --cov-report=term --cov-fail-under=80
+      - uses: actions/upload-artifact@v4
+        with: {name: python-coverage, path: services/coverage.xml}
+
+  python-integration:
+    runs-on: ubuntu-latest
+    needs: python
+    defaults: {run: {working-directory: services}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv sync --all-packages --dev
+      - run: uv run pytest -q -m integration tests/integration --timeout=900
+        env: {TESTCONTAINERS_RYUK_DISABLED: "true"}
+
+  go:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: simulator}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version-file: simulator/go.mod, cache-dependency-path: simulator/go.sum}
+      - run: go vet ./...
+      - uses: golangci/golangci-lint-action@v6
+        with: {working-directory: simulator}
+      - run: go test -race -coverprofile=coverage.out ./...
+
+  web:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: web}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: 22, cache: npm, cache-dependency-path: web/package-lock.json}
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test -- --run
+      - run: npm run build
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env: {GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"}
+      - name: semgrep
+        uses: semgrep/semgrep-action@v1
+        with: {config: "p/default p/python p/golang p/typescript p/owasp-top-ten"}
+      - name: trivy fs (deps)
+        uses: aquasecurity/trivy-action@0.28.0
+        with: {scan-type: fs, severity: "CRITICAL,HIGH", exit-code: "1", ignore-unfixed: true, format: sarif, output: trivy-fs.sarif}
+      - uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with: {sarif_file: trivy-fs.sarif}
+
+  images:
+    runs-on: ubuntu-latest
+    needs: [python, go, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - run: docker build -f services/Dockerfile -t orbit/services:ci .
+      - run: docker build -t orbit/simulator:ci simulator
+      - run: docker build -t orbit/web:ci web
+      - uses: aquasecurity/trivy-action@0.28.0
+        with: {image-ref: orbit/services:ci, severity: "CRITICAL,HIGH", exit-code: "1", ignore-unfixed: true}
+      - uses: aquasecurity/trivy-action@0.28.0
+        with: {image-ref: orbit/simulator:ci, severity: "CRITICAL,HIGH", exit-code: "1", ignore-unfixed: true}
+
+  acceptance:
+    runs-on: ubuntu-latest
+    needs: images
+    steps:
+      - uses: actions/checkout@v4
+      - run: cp .env.example .env
+      - run: docker compose up -d --build redpanda timescale redis minio migrate seed api
+        env: {SIM_VEHICLES: "2000"}
+      - run: docker compose run --rm --entrypoint "" api sh -c "sleep 20; curl -sf http://api:8000/healthz"
+      - uses: astral-sh/setup-uv@v4
+      - run: cd services && uv sync --all-packages --dev && uv run behave ../tests/acceptance --tags=~@wip
+        env: {API_BASE: "http://localhost:8000"}
+      - name: ZAP baseline (DAST)
+        uses: zaproxy/action-baseline@v0.12.0
+        with: {target: "http://localhost:8000/api/v1/healthz", fail_action: false}
+      - run: docker compose down -v
+        if: always()
+
+  infra:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform -chdir=infra/terraform/aws init -backend=false && terraform -chdir=infra/terraform/aws validate
+      - uses: azure/setup-helm@v4
+      - run: helm lint infra/helm/orbit

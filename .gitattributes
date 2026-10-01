@@ -1,0 +1,9 @@
+# Containers are Linux: keep LF everywhere so shell scripts and configs survive a Windows checkout.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.docx binary
+*.parquet binary

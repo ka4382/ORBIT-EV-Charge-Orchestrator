@@ -1,0 +1,79 @@
+{{- range $name, $svc := .Values.services }}
+{{- if or (ne $name "simulator") $svc.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orbit-{{ $name }}
+  labels: {app.kubernetes.io/name: orbit, app.kubernetes.io/component: {{ $name }}}
+spec:
+  replicas: {{ $svc.replicas | default 1 }}
+  selector: {matchLabels: {app.kubernetes.io/name: orbit, app.kubernetes.io/component: {{ $name }}}}
+  template:
+    metadata:
+      labels: {app.kubernetes.io/name: orbit, app.kubernetes.io/component: {{ $name }}}
+      annotations: {prometheus.io/scrape: "true", prometheus.io/port: "9100"}
+    spec:
+      securityContext: {runAsNonRoot: true, runAsUser: 10001, seccompProfile: {type: RuntimeDefault}}
+      containers:
+        - name: {{ $name }}
+          {{- if eq $name "web" }}
+          image: "{{ $.Values.image.registry }}/orbit-web:{{ $.Values.image.tag }}"
+          ports: [{containerPort: 80, name: http}]
+          {{- else if eq $name "simulator" }}
+          image: "{{ $.Values.image.registry }}/orbit-simulator:{{ $.Values.image.tag }}"
+          env:
+            - {name: SIM_VEHICLES, value: {{ $svc.vehicles | quote }}}
+            - {name: KAFKA_BOOTSTRAP, value: {{ $.Values.kafka.bootstrap | quote }}}
+          {{- else }}
+          image: "{{ $.Values.image.registry }}/orbit-services:{{ $.Values.image.tag }}"
+          {{- if eq $name "api" }}
+          command: ["uvicorn", "orbit_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+          ports: [{containerPort: 8000, name: http}, {containerPort: 9100, name: metrics}]
+          readinessProbe: {httpGet: {path: /readyz, port: http}, periodSeconds: 5}
+          livenessProbe: {httpGet: {path: /healthz, port: http}, periodSeconds: 10}
+          {{- else }}
+          command: ["python", "-m", "orbit_{{ $name }}"]
+          ports: [{containerPort: 9100, name: metrics}]
+          livenessProbe: {httpGet: {path: /, port: metrics}, periodSeconds: 15}
+          {{- end }}
+          env:
+            {{- include "orbit.env" $ | nindent 12 }}
+          {{- end }}
+          securityContext: {allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: {drop: [ALL]}}
+          resources:
+            requests: {cpu: {{ $svc.cpu | quote }}, memory: {{ $svc.memory | quote }}}
+            limits: {memory: {{ $svc.memory | quote }}}
+          volumeMounts: [{name: tmp, mountPath: /tmp}]
+      volumes: [{name: tmp, emptyDir: {}}]
+{{- if $svc.hpa }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: orbit-{{ $name }}}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: orbit-{{ $name }}}
+  minReplicas: {{ $svc.hpa.min }}
+  maxReplicas: {{ $svc.hpa.max }}
+  metrics: [{type: Resource, resource: {name: cpu, target: {type: Utilization, averageUtilization: {{ $svc.hpa.targetCPU }}}}}]
+{{- end }}
+{{- if $svc.port }}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: orbit-{{ $name }}}
+spec:
+  selector: {app.kubernetes.io/name: orbit, app.kubernetes.io/component: {{ $name }}}
+  ports: [{port: {{ $svc.port }}, targetPort: http, name: http}]
+{{- end }}
+{{- if $.Values.podDisruptionBudget }}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: orbit-{{ $name }}}
+spec:
+  minAvailable: {{ $.Values.podDisruptionBudget.minAvailable }}
+  selector: {matchLabels: {app.kubernetes.io/name: orbit, app.kubernetes.io/component: {{ $name }}}}
+{{- end }}
+{{- end }}
+{{- end }}

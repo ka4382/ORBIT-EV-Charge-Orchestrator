@@ -1,0 +1,25 @@
+sequenceDiagram
+  autonumber
+  participant V as Vehicle (simulator)
+  participant K as Kafka
+  participant I as ingest
+  participant A as alert
+  participant R as Redis
+  participant P as Postgres
+  participant API as api (WS)
+  participant U as Console
+  V->>K: telemetry.raw {OEM_B, soc 0.12}
+  K->>I: batch
+  I->>I: adapter → canonical, Bloom dedupe
+  I->>K: telemetry.canonical (key vin)
+  K->>A: batch
+  A->>R: GEOSEARCH geo:chargers radius=range_km
+  R-->>A: none reachable
+  A->>R: SET NX alert:dedupe:{vin}:STRAND_RISK EX 900
+  A->>K: alerts {STRAND_RISK, CRITICAL}
+  A->>P: INSERT alert
+  A->>R: PUBLISH events:{tenant} {type: alert}
+  R-->>API: message
+  API-->>U: WS frame < 5 s after step 1
+  U->>API: POST /alerts/{id}/ack
+  API->>P: UPDATE alert + INSERT audit_log

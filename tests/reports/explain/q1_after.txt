@@ -1,0 +1,9 @@
+Limit  (cost=0.42..7.40 rows=50 width=39) (actual time=0.462..0.477 rows=50 loops=1)
+  Buffers: shared hit=4
+  ->  Index Scan using alert_feed_idx on alert  (cost=0.42..6805.88 rows=48793 width=39) (actual time=0.460..0.470 rows=50 loops=1)
+        Index Cond: ((tenant_id = 1) AND (ROW(ts, id) < ROW('2026-09-30 23:50:40.993539+00'::timestamp with time zone, 802494)))
+        Buffers: shared hit=4
+Planning:
+  Buffers: shared hit=468
+Planning Time: 6.619 ms
+Execution Time: 0.551 ms

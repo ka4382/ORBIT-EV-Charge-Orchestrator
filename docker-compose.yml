@@ -1,0 +1,247 @@
+name: orbit
+x-python-env: &python-env
+  env_file: .env
+  environment:
+    PYTHONUNBUFFERED: "1"
+x-healthy: &healthy
+  condition: service_healthy
+
+services:
+  redpanda:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: redpandadata/redpanda:v24.2.7
+    command: >
+      redpanda start --mode dev-container --smp ${REDPANDA_SMP:-3} --memory ${REDPANDA_MEMORY:-3G} --overprovisioned
+      --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+      --pandaproxy-addr 0.0.0.0:8082 --schema-registry-addr 0.0.0.0:8081
+      --set redpanda.auto_create_topics_enabled=false
+    ports: ["19092:19092", "8081:8081", "8082:8082"]
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes: [redpanda:/var/lib/redpanda/data]
+
+  console:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: redpandadata/console:v2.7.2
+    environment:
+      KAFKA_BROKERS: redpanda:9092
+      KAFKA_SCHEMAREGISTRY_ENABLED: "true"
+      KAFKA_SCHEMAREGISTRY_URLS: http://redpanda:8081
+    ports: ["8090:8080"]
+    depends_on: {redpanda: *healthy}
+
+  emqx:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: emqx/emqx:5.8.3
+    ports: ["1883:1883", "8883:8883", "18083:18083"]
+    environment:
+      EMQX_DASHBOARD__DEFAULT_PASSWORD: orbit-admin
+    healthcheck:
+      test: ["CMD", "emqx", "ctl", "status"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+
+  timescale:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: timescale/timescaledb-ha:pg16
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orbit
+    command: >
+      postgres -c shared_preload_libraries=timescaledb -c max_connections=300
+      -c shared_buffers=1GB -c work_mem=32MB -c timescaledb.max_background_workers=8
+    ports: ["5432:5432"]
+    volumes: [timescale:/home/postgres/pgdata/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d orbit"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  redis:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: redis:7.4-alpine
+    command: redis-server --save "" --appendonly no --maxmemory 1gb --maxmemory-policy allkeys-lru
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  minio:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    # S3-compatible object store. minio/minio left Docker Hub in 2025; the bitnami legacy build is API-identical.
+    image: bitnamilegacy/minio:latest
+    environment:
+      MINIO_ROOT_USER: orbit
+      MINIO_ROOT_PASSWORD: orbit-secret
+      MINIO_DEFAULT_BUCKETS: orbit-telemetry
+    ports: ["9000:9000", "9001:9001"]
+    volumes: [minio:/bitnami/minio/data]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/minio/health/live || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  topics:
+    # Applies contracts/topics.yaml (partitions, retention) before any producer runs. Broker auto-create is
+    # disabled so a producer can never create a 1-partition topic by accident.
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -c "import asyncio; from orbit_common.kafka import wait_for_kafka; asyncio.run(wait_for_kafka())"
+    depends_on: {redpanda: *healthy}
+
+  migrate:
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python db/migrate.py
+    depends_on: {timescale: *healthy}
+
+  seed:
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_common.seed
+    depends_on: {migrate: {condition: service_completed_successfully}}
+
+  ingest:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_ingest
+    depends_on: {redpanda: *healthy}
+    deploy: {replicas: 2}
+
+  state:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_state
+    depends_on: {redpanda: *healthy, redis: *healthy}
+    deploy: {replicas: 2}
+
+  alert:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_alert
+    depends_on: {redpanda: *healthy, redis: *healthy, seed: {condition: service_completed_successfully}}
+    deploy: {replicas: 2}
+
+  archiver:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_archiver
+    depends_on: {redpanda: *healthy, seed: {condition: service_completed_successfully}, minio: *healthy}
+    deploy: {replicas: 1}
+
+  planner:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_planner
+    depends_on: {redpanda: *healthy, redis: *healthy, seed: {condition: service_completed_successfully}}
+
+  ml:
+    # Batch job (not a server): trains range/SoH models, writes battery_health embeddings and range:{vin} keys.
+    # Run on demand or from cron: `docker compose --profile ml run --rm ml`.
+    profiles: [ml]
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: python -m orbit_ml train-and-publish
+    depends_on: {seed: {condition: service_completed_successfully}, redis: *healthy}
+
+  api:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ., dockerfile: services/Dockerfile, target: runtime}
+    <<: *python-env
+    command: uvicorn orbit_api.main:app --host 0.0.0.0 --port 8000 --workers 4
+    ports: ["8000:8000"]
+    depends_on: {seed: {condition: service_completed_successfully}, redis: *healthy, redpanda: *healthy}
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request;urllib.request.urlopen(\"http://localhost:8000/healthz\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  simulator:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ./simulator}
+    env_file: .env
+    environment:
+      KAFKA_BOOTSTRAP: redpanda:9092
+    depends_on: {topics: {condition: service_completed_successfully}, seed: {condition: service_completed_successfully}}
+    profiles: [sim]
+
+  web:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    build: {context: ./web}
+    ports: ["3000:80"]
+    depends_on: {api: *healthy}
+
+  # --- observability (profile: obs) ---
+  prometheus:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: prom/prometheus:v2.55.1
+    profiles: [obs]
+    command: ["--config.file=/etc/prometheus/prometheus.yml", "--storage.tsdb.retention.time=2d"]
+    volumes: [./infra/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro]
+    ports: ["9090:9090"]
+
+  otel-collector:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: otel/opentelemetry-collector-contrib:0.113.0
+    profiles: [obs]
+    command: ["--config=/etc/otel/config.yaml"]
+    volumes: [./infra/observability/otel-collector.yaml:/etc/otel/config.yaml:ro]
+    ports: ["4317:4317", "4318:4318"]
+
+  tempo:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: grafana/tempo:2.6.1
+    profiles: [obs]
+    command: ["-config.file=/etc/tempo.yaml"]
+    volumes: [./infra/observability/tempo.yaml:/etc/tempo.yaml:ro, tempo:/var/tempo]
+
+  loki:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: grafana/loki:3.2.1
+    profiles: [obs]
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes: [./infra/observability/loki.yaml:/etc/loki/loki.yaml:ro, loki:/loki]
+
+  promtail:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: grafana/promtail:3.2.1
+    profiles: [obs]
+    command: ["-config.file=/etc/promtail/promtail.yaml"]
+    volumes: [./infra/observability/promtail.yaml:/etc/promtail/promtail.yaml:ro, /var/run/docker.sock:/var/run/docker.sock:ro]
+    depends_on: [loki]
+
+  grafana:
+    restart: unless-stopped  # crash-only services: exit on fatal error, supervisor restarts, replay from last commit
+    image: grafana/grafana:11.3.0
+    profiles: [obs]
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_SECURITY_ADMIN_PASSWORD: orbit-admin
+    volumes:
+      - ./infra/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports: ["3001:3000"]
+    depends_on: [prometheus, loki, tempo]
+
+volumes:
+  redpanda: {}
+  timescale: {}
+  minio: {}
+  tempo: {}
+  loki: {}

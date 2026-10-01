@@ -1,0 +1,235 @@
+.landing {
+  background: var(--mist);
+  color: var(--ink);
+  min-height: 100vh;
+  position: relative;
+}
+.landing::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('/brand/textures/paper-crumple.png') center / 900px repeat;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: multiply;
+}
+.landing > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  min-height: 82vh;
+  background: var(--void);
+  color: var(--paper);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(2px) saturate(1.1);
+  transform: scale(1.04);
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(26, 30, 26, 0.6);
+}
+.hero-nav {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 40px;
+  font-size: var(--fs-14);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-brand-glyph,
+.hero-glyph {
+  filter: invert(1);
+}
+.hero-nav-link {
+  color: var(--paper);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+.hero-nav-link:hover {
+  border-bottom-color: var(--ember);
+}
+.hero-content {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px 40px 120px;
+  max-width: 1200px;
+}
+.hero-wordmark {
+  font-size: var(--fs-112);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 20px;
+}
+.hero-pitch {
+  font-size: var(--fs-28);
+  font-weight: 500;
+  max-width: 640px;
+  margin: 0 0 32px;
+  color: var(--mist);
+  line-height: 1.25;
+}
+.hero-cta {
+  align-self: flex-start;
+}
+.hero-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 120px;
+  background: var(--mist);
+  -webkit-mask: url('/brand/textures/torn-edge-light.png') center bottom / 100% 100% no-repeat;
+  mask: url('/brand/textures/torn-edge-light.png') center bottom / 100% 100% no-repeat;
+}
+
+/* Chapters */
+.chapters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 32px;
+  padding: 56px 40px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.chapter {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chapter-n {
+  font-size: var(--fs-12);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding-top: 10px;
+}
+.chapter-glyph {
+  filter: none;
+  margin: 8px 0;
+}
+.chapter-title {
+  font-size: var(--fs-64);
+}
+.chapter p {
+  margin: 0;
+  color: #3b433b;
+  font-size: var(--fs-16);
+  max-width: 300px;
+}
+
+/* Colour band */
+.band {
+  background: var(--ember);
+  color: var(--ink);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 40px;
+  gap: 24px;
+}
+.band-kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 2px solid var(--ink);
+  padding-left: 20px;
+}
+.band-num {
+  font-size: var(--fs-112);
+}
+.band-label {
+  font-size: var(--fs-14);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.landing-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 56px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+  font-size: var(--fs-16);
+}
+.landing-detail .label {
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+.landing-detail p {
+  margin: 0;
+  max-width: 520px;
+}
+
+.landing-footer {
+  border-top: 1px solid var(--ink);
+  padding: 24px 40px;
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--fs-12);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 900px) {
+  .hero-nav,
+  .hero-content,
+  .chapters,
+  .band,
+  .landing-detail,
+  .landing-footer {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .hero-wordmark {
+    font-size: 64px;
+    gap: 12px;
+  }
+  .hero-glyph {
+    width: 56px;
+    height: 56px;
+  }
+  .hero-pitch {
+    font-size: var(--fs-20);
+  }
+  .chapters,
+  .band,
+  .landing-detail {
+    grid-template-columns: 1fr;
+  }
+  .chapter-title {
+    font-size: var(--fs-40);
+  }
+  .band-num {
+    font-size: var(--fs-64);
+  }
+}

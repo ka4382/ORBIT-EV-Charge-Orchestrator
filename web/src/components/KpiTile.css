@@ -1,0 +1,59 @@
+.kpi {
+  padding: 12px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+.kpi::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--sage);
+  opacity: 0.8;
+}
+.kpi[data-tone='ember']::after {
+  background: var(--ember);
+}
+.kpi[data-tone='mist']::after {
+  background: var(--moss);
+}
+.kpi-value {
+  font-size: var(--fs-40);
+  color: var(--fg-strong);
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+.kpi-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 20px;
+}
+@media (max-width: 1500px) {
+  .fleet-kpis .kpi-value {
+    font-size: 32px;
+  }
+}
+.kpi-unit {
+  font-family: var(--font-body);
+  font-size: var(--fs-12);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+.kpi-spark {
+  flex: none;
+}
+.kpi-delta {
+  font-size: var(--fs-12);
+  color: var(--fg-muted);
+}

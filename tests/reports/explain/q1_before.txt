@@ -1,0 +1,20 @@
+Limit  (cost=10033.00..10038.84 rows=50 width=39) (actual time=80.924..89.168 rows=50 loops=1)
+  Buffers: shared hit=5497
+  ->  Gather Merge  (cost=9747.15..14519.62 rows=40904 width=39) (actual time=80.303..89.052 rows=2500 loops=1)
+        Workers Planned: 2
+        Workers Launched: 2
+        Buffers: shared hit=5497
+        ->  Sort  (cost=8747.12..8798.25 rows=20452 width=39) (actual time=68.870..68.957 rows=1495 loops=3)
+              Sort Key: ts DESC, id DESC
+              Sort Method: top-N heapsort  Memory: 368kB
+              Buffers: shared hit=5497
+              Worker 0:  Sort Method: top-N heapsort  Memory: 368kB
+              Worker 1:  Sort Method: top-N heapsort  Memory: 368kB
+              ->  Parallel Seq Scan on alert  (cost=0.00..7490.58 rows=20452 width=39) (actual time=5.423..62.762 rows=16668 loops=3)
+                    Filter: (tenant_id = 1)
+                    Rows Removed by Filter: 116681
+                    Buffers: shared hit=5407
+Planning:
+  Buffers: shared hit=439
+Planning Time: 1.690 ms
+Execution Time: 89.368 ms

@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant S as Simulator
+  participant K as Kafka broker
+  participant I as ingest (group)
+  participant ST as state
+  Note over K: broker killed (chaos test)
+  S->>K: produce fails
+  S->>S: franz-go buffers up to MaxBufferedRecords, retries with backoff
+  I->>K: fetch fails, consumer keeps last committed offset
+  Note over K: broker restarts, log intact (acks=all, fsync)
+  S->>K: buffered records flushed in order per partition
+  K->>I: rebalance, resume from committed offset (at-least-once)
+  I->>I: duplicates from re-delivery removed by Bloom / unique index
+  I->>K: telemetry.canonical
+  K->>ST: lag drains, seq-monotonic writes ignore stale replays

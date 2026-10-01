@@ -1,0 +1,1 @@
+"""Adapters: Redis state store."""

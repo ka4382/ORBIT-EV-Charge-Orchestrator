@@ -1,0 +1,31 @@
+image:
+  registry: ghcr.io/orbit-fleet
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# External dependencies (managed services in cloud, in-cluster charts locally)
+kafka: {bootstrap: "kafka:9092", saslSecret: ""}
+postgres: {url: "postgresql://postgres:postgres@timescale:5432/orbit", appUrl: "postgresql://orbit_app:orbit_app@timescale:5432/orbit"}
+redis: {url: "redis://redis:6379/0"}
+s3: {endpoint: "http://minio:9000", bucket: "orbit-telemetry", secretName: "orbit-s3"}
+auth: {jwksUrl: "", issuer: "orbit-dev", devSecretName: "orbit-jwt"}
+
+services:
+  ingest:   {replicas: 3, cpu: "500m", memory: "512Mi", hpa: {min: 3, max: 12, targetCPU: 70}}
+  state:    {replicas: 2, cpu: "500m", memory: "512Mi", hpa: {min: 2, max: 8, targetCPU: 70}}
+  alert:    {replicas: 2, cpu: "500m", memory: "512Mi", hpa: {min: 2, max: 8, targetCPU: 70}}
+  archiver: {replicas: 2, cpu: "1",    memory: "1Gi",   hpa: {min: 2, max: 6, targetCPU: 70}}
+  planner:  {replicas: 1, cpu: "500m", memory: "512Mi", hpa: {min: 1, max: 4, targetCPU: 70}}
+  api:      {replicas: 3, cpu: "500m", memory: "512Mi", hpa: {min: 3, max: 20, targetCPU: 60}, port: 8000}
+  web:      {replicas: 2, cpu: "100m", memory: "128Mi", port: 80}
+  simulator: {enabled: false, vehicles: 100000}
+
+ingress:
+  enabled: true
+  className: nginx          # values-aws.yaml: alb; values-gke.yaml: gce
+  host: orbit.example.com
+  tls: true
+
+podDisruptionBudget: {minAvailable: 1}
+networkPolicy: {enabled: true}
+serviceMonitor: {enabled: true}

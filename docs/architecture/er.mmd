@@ -1,0 +1,71 @@
+erDiagram
+  TENANT ||--o{ FLEET : owns
+  TENANT ||--o{ DEPOT : owns
+  TENANT ||--o{ VEHICLE : owns
+  TENANT ||--o{ TARIFF : has
+  TENANT ||--o{ USER_ACCOUNT : has
+  TENANT ||--o{ SUBSCRIPTION : has
+  TENANT ||--o{ AUDIT_LOG : records
+  OEM ||--o{ VEHICLE_MODEL : makes
+  VEHICLE_MODEL ||--o{ VEHICLE : "is model of"
+  DEPOT ||--o{ FLEET : "home of"
+  DEPOT ||--o{ CHARGER : hosts
+  DEPOT }o--|| TARIFF : "billed by"
+  TARIFF ||--o{ TARIFF_SLOT : "has"
+  FLEET ||--o{ VEHICLE : contains
+  VEHICLE ||--o{ TRIP : drives
+  VEHICLE ||--o{ DRIVER_ASSIGNMENT : "assigned"
+  DRIVER ||--o{ DRIVER_ASSIGNMENT : "assigned"
+  VEHICLE ||--o{ CHARGING_PLAN : "planned"
+  CHARGING_PLAN ||--o{ CHARGING_SLOT : "consists of"
+  CHARGER ||--o{ CHARGING_SLOT : "reserved"
+  VEHICLE ||--o{ CHARGING_SESSION : "charges"
+  CHARGER ||--o{ CHARGING_SESSION : "serves"
+  CHARGING_SLOT ||--o| CHARGING_SESSION : "realised as"
+  VEHICLE ||--o{ ALERT : raises
+  VEHICLE ||--o{ BATTERY_HEALTH : "measured"
+  TENANT ||--o{ AGENT_ACTION : "proposed for"
+  VEHICLE {
+    bigint id PK
+    char17 vin UK
+    int tenant_id FK
+    int fleet_id FK
+    int model_id FK
+    text plate
+  }
+  CHARGING_PLAN {
+    bigint id PK
+    bigint vehicle_id FK
+    numeric target_soc
+    timestamptz depart_ts
+    numeric total_cost
+    numeric baseline_cost
+    text status
+  }
+  CHARGING_SLOT {
+    bigint id PK
+    bigint plan_id FK
+    int charger_id FK
+    timestamptz start_ts
+    timestamptz end_ts
+    numeric kw
+    numeric kwh
+    numeric cost
+  }
+  TARIFF_SLOT {
+    int id PK
+    int tariff_id FK
+    smallint dow
+    smallint start_min
+    smallint end_min
+    numeric price_per_kwh
+  }
+  ALERT {
+    bigint id PK
+    int tenant_id FK
+    bigint vehicle_id FK
+    text type
+    text severity
+    timestamptz ts
+    jsonb payload
+  }

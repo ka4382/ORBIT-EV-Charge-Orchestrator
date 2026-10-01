@@ -1,0 +1,2 @@
+apiVersion: 1
+providers: [{name: orbit, folder: ORBIT, type: file, options: {path: /var/lib/grafana/dashboards}}]

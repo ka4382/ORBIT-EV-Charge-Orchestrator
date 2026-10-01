@@ -1,0 +1,4 @@
+ingress: {className: gce, host: orbit.gcp.example.com}
+kafka: {bootstrap: "bootstrap.orbit.asia-south1.managedkafka.goog:9092"}
+s3: {endpoint: "https://storage.googleapis.com", bucket: orbit-telemetry-prod}
+storageClass: standard-rwo

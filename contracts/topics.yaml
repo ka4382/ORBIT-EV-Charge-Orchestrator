@@ -1,0 +1,8 @@
+# Kafka topic contract. Applied by services/common/orbit_common/kafka.py:ensure_topics() at startup.
+topics:
+  telemetry.raw:        {partitions: 48, retention_ms: 86400000,  key: vin,            producers: [simulator, mqtt-bridge], consumers: [ingest]}
+  telemetry.canonical:  {partitions: 48, retention_ms: 604800000, key: vin,            producers: [ingest],   consumers: [state, alert, archiver, ml]}
+  telemetry.dlq:        {partitions: 6,  retention_ms: 604800000, key: vin,            producers: [ingest],   consumers: [ops]}
+  alerts:               {partitions: 12, retention_ms: 604800000, key: "tenant_id:vin", producers: [alert],    consumers: [api, agent]}
+  plans.requested:      {partitions: 12, retention_ms: 86400000,  key: vehicle_id,     producers: [api],      consumers: [planner]}
+  plans.ready:          {partitions: 12, retention_ms: 86400000,  key: vehicle_id,     producers: [planner],  consumers: [api]}

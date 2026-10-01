@@ -1,0 +1,22 @@
+.schedule-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.schedule-panel {
+  padding: 16px;
+  overflow-x: auto;
+}
+.schedule-detail {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+@media (max-width: 900px) {
+  .schedule-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

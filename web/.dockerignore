@@ -1,0 +1,4 @@
+# Host node_modules (Windows or macOS binaries) must never reach the Linux build stage.
+node_modules
+dist
+*.tsbuildinfo

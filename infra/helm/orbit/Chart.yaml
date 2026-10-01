@@ -1,0 +1,6 @@
+apiVersion: v2
+name: orbit
+description: ORBIT EV Charge Orchestrator — stateless services; brokers and stores are external or bundled via values
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

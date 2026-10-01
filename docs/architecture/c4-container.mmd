@@ -1,0 +1,41 @@
+flowchart LR
+  subgraph edge[Edge]
+    SIM[Simulator · Go<br/>100K vehicles]
+  end
+  subgraph msg[Messaging]
+    EMQX[EMQX · MQTT mTLS]
+    K[(Kafka / Redpanda<br/>telemetry.raw · canonical · dlq · alerts · plans.*)]
+  end
+  subgraph stream[Stream services · Python]
+    ING[ingest<br/>Avro validate · OEM adapters · Bloom dedupe · back-pressure]
+    ST[state<br/>Redis projection · geo · summaries]
+    AL[alert<br/>rules · < 5 s]
+    AR[archiver<br/>COPY → Timescale · Parquet → S3]
+    PL[planner<br/>Dijkstra · DP schedule · depot smoothing]
+  end
+  subgraph stores[Stores]
+    PG[(PostgreSQL 16<br/>TimescaleDB · pgvector · RLS)]
+    RD[(Redis 7<br/>veh:* · geo · pub/sub)]
+    S3[(MinIO / S3<br/>Parquet dt=/hour=/tenant=)]
+  end
+  subgraph app[Application]
+    API[api · FastAPI<br/>OAuth2/JWT · RBAC · keyset · rate limit · WS]
+    AG[agent · LangGraph + Claude<br/>tools allowlist · approval · audit]
+    WEB[web · React<br/>console · map · Gantt]
+  end
+  SIM -- "MQTT 8883" --> EMQX -- "bridge" --> K
+  SIM -- "Kafka (lz4, key=vin)" --> K
+  K --> ING --> K
+  K --> ST --> RD
+  K --> AL --> K
+  AL --> PG
+  AL --> RD
+  K --> AR --> PG
+  AR --> S3
+  API -- "plans.requested" --> K --> PL --> PG
+  PL --> K
+  RD -- "pub/sub events:{tenant}" --> API
+  PG --> API
+  API -- "HTTPS / WS" --> WEB
+  AG --> API
+  AG --> PG

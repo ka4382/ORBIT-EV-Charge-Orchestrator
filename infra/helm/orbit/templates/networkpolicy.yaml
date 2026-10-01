@@ -1,0 +1,10 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: orbit-default-deny}
+spec:
+  podSelector: {matchLabels: {app.kubernetes.io/name: orbit}}
+  policyTypes: [Ingress]
+  ingress:
+    - from: [{podSelector: {matchLabels: {app.kubernetes.io/name: orbit}}}, {namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: ingress-nginx}}}, {namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: monitoring}}}]
+{{- end }}
